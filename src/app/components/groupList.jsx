@@ -1,6 +1,6 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import _ from 'lodash'
+import React from "react"
+import PropTypes from "prop-types"
+import _ from "lodash"
 
 const GroupList = ({
     items,
@@ -16,10 +16,10 @@ const GroupList = ({
                     <li
                         key={items[item][valueProp]}
                         className={
-                            'list-group-item' +
+                            "list-group-item" +
                             (_.isEqual(items[item], selectedProf)
-                                ? ' active'
-                                : '')
+                                ? " active"
+                                : "")
                         }
                         role="button"
                         onClick={() => {
@@ -35,8 +35,8 @@ const GroupList = ({
 }
 
 GroupList.defaultProps = {
-    valueProp: '_id',
-    contentProp: 'name'
+    valueProp: "_id",
+    contentProp: "name"
 }
 
 GroupList.propTypes = {

@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: ['plugin:react/recommended', 'standard'],
+  extends: ['plugin:react/recommended', 'standard', 'prettier'],
   parserOptions: {
     sourceType: 'module',
     ecmaFeatures: {
@@ -14,7 +14,12 @@ module.exports = {
 
   plugins: ['react'],
   rules: {
-    indent: ['error', 2],
+    quotes: [
+      'error',
+      'double',
+      { avoidEscape: true, allowTemplateLiterals: false },
+    ],
+    indent: ['error', 4],
     'space-before-function-paren': [
       'error',
       { anonymous: 'always', named: 'never' },
