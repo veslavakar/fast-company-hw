@@ -1,4 +1,5 @@
 import { React, useState, useEffect } from "react"
+import { useParams } from "react-router-dom"
 import { paginate } from "../utils/paginate"
 import Pagination from "./pagination"
 import PropTypes from "prop-types"
@@ -7,16 +8,19 @@ import api from "../../api"
 import SearchStatus from "./searchStatus"
 import _ from "lodash"
 import UserTable from "./usersTable"
+import User from "./layouts/user"
+
+// import User from "./layouts/user"
 
 const Users = () => {
     const pageSize = 8
-
+    const params = useParams()
+    const { userId } = params
     const [users, setUsers] = useState()
 
     useEffect(() => {
         api.users.fetchAll().then((data) => setUsers(data))
     }, [])
-
     const handleDelete = (userId) => {
         setUsers(users.filter((user) => user._id !== userId))
     }
@@ -61,7 +65,7 @@ const Users = () => {
         setSortBy(item)
     }
 
-    if (users) {
+    if (users && !userId) {
         const filteredUsers = selectedProf
             ? users.filter((user) => _.isEqual(user.profession, selectedProf))
             : users
@@ -75,46 +79,55 @@ const Users = () => {
         const userCrop = paginate(sortedUsers, currentPage, pageSize)
 
         return (
-            <div className="d-flex">
-                {professions && (
-                    <div className="d-flex flex-column flex-shrink-0 p-3">
-                        <GroupList
-                            items={professions}
-                            onItemSelect={handleProfessionSelect}
-                            selectedProf={selectedProf}
-                        />
-                        <button
-                            className="btn btn-secondary mt-2"
-                            onClick={clearFilter}
-                        >
-                            Очистить
-                        </button>
-                    </div>
-                )}
-                <div className="d-flex flex-column">
-                    <SearchStatus length={count} />
-                    {count > 0 && (
-                        <UserTable
-                            users={userCrop}
-                            onSort={handleSort}
-                            selectedSort={sortBy}
-                            onDelete={handleDelete}
-                            onToggleBookMark={handleToggleBookMark}
-                        />
+            <>
+                <div className="d-flex">
+                    {professions && (
+                        <div className="d-flex flex-column flex-shrink-0 p-3">
+                            <GroupList
+                                items={professions}
+                                onItemSelect={handleProfessionSelect}
+                                selectedProf={selectedProf}
+                            />
+                            <button
+                                className="btn btn-secondary mt-2"
+                                onClick={clearFilter}
+                            >
+                                Очистить
+                            </button>
+                        </div>
                     )}
-                    <div className="d-flex justify-content-center">
-                        <Pagination
-                            itemsCount={count}
-                            pageSize={pageSize}
-                            currentPage={currentPage}
-                            onPageChange={handlePageChange}
-                        />
+                    <div className="d-flex flex-column">
+                        <SearchStatus length={count} />
+                        {count > 0 && (
+                            <UserTable
+                                users={userCrop}
+                                onSort={handleSort}
+                                selectedSort={sortBy}
+                                onDelete={handleDelete}
+                                onToggleBookMark={handleToggleBookMark}
+                            />
+                        )}
+                        <div className="d-flex justify-content-center">
+                            <Pagination
+                                itemsCount={count}
+                                pageSize={pageSize}
+                                currentPage={currentPage}
+                                onPageChange={handlePageChange}
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
+            </>
         )
     }
-    return "loading..."
+    if (userId) {
+        if (users) {
+            return <User id={userId} data={users} />
+        } else return "loading..."
+    }
+    if (!users) {
+        return "loading..."
+    }
 }
 
 Users.propTypes = {
